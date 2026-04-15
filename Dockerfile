@@ -4,17 +4,15 @@ FROM python:3.10-slim
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies (nmap if needed)
+# Install system dependencies
 RUN apt-get update && apt-get install -y nmap && rm -rf /var/lib/apt/lists/*
 
-# Copy scanner requirements and script
-COPY scanner/ /app/scanner/
-COPY reports/ /app/reports/
+# Copy the entire project for installation
+COPY . /app/
 
-# Install python dependencies
-RUN pip install --no-cache-dir requests scapy pyyaml prettytable
+# Install the package and its dependencies
+RUN pip install --no-cache-dir .
 
-# Expose no ports as it's a CLI tool, but could expose if we served the reports
-# For demo purposes, we just run the engine
-ENTRYPOINT ["python", "scanner/engine.py"]
+# SentinelGuard is now available as a CLI command
+ENTRYPOINT ["sentinelguard"]
 CMD ["127.0.0.1"]

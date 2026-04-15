@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sentinelguard"
+version = "1.0.0"
+authors = [
+  { name="Atmakuri Ashish", email="ashishatmakuri05@gmail.com" },
+]
+description = "A premium Security Automation & Validation Framework."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Security",
+]
+dependencies = [
+    "requests",
+    "scapy",
+    "pyyaml",
+    "prettytable",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/ATK-007/SentinelGuard"
+"Bug Tracker" = "https://github.com/ATK-007/SentinelGuard/issues"
+
+[project.scripts]
+sentinelguard = "sentinelguard.engine:main"

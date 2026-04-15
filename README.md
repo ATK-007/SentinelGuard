@@ -38,13 +38,24 @@ sentinel-guard/
 
 ## 🚥 Quick Start
 
-1. **Run the Scanner**:
-   ```bash
-   python scanner/engine.py <target_ip>
-   ```
+### 1. Installation
+SentinelGuard is now available as a standard Python package. You can install it locally:
 
-2. **View the Dashboard**:
-   Open `dashboard/index.html` in any modern browser to visualize the results from the `reports/` directory.
+```bash
+git clone https://github.com/ATK-007/SentinelGuard.git
+cd SentinelGuard
+pip install .
+```
+
+### 2. Usage
+After installation, you can run the framework directly from your terminal:
+
+```bash
+sentinelguard <target_ip>
+```
+
+### 3. View the Dashboard
+Open `dashboard/index.html` in any modern browser to visualize the results from the `reports/` directory.
 
 ## 🚨 Automated Scenarios (Current Suite)
 

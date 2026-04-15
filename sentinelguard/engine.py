@@ -223,7 +223,10 @@ class SentinelEngine:
             json.dump(self.results, f, indent=4)
         print(f"\n[SUCCESS] Report generated: {filename}")
 
-if __name__ == "__main__":
+def main():
     target = sys.argv[1] if len(sys.argv) > 1 else "127.0.0.1"
     sentinel = SentinelEngine(target)
     sentinel.run()
+
+if __name__ == "__main__":
+    main()
