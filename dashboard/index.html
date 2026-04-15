@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelGuard | Security Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #030712;
+      --bg-card: rgba(17, 24, 39, 0.7);
+      --accent-primary: #3b82f6;
+      --accent-secondary: #06b6d4;
+      --text-primary: #f3f4f6;
+      --text-secondary: #9ca3af;
+      --critical: #ef4444;
+      --high: #f97316;
+      --medium: #eab308;
+      --low: #3b82f6;
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --font-display: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      background: var(--accent-primary);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      padding: 24px;
+      border-radius: 20px;
+      transition: transform 0.3s ease;
+    }
+    .stat-card:hover { transform: translateY(-5px); border-color: var(--accent-primary); }
+
+    .stat-label { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 8px; }
+    .stat-value { font-size: 2.5rem; font-weight: 800; }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 32px;
+      overflow: hidden;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .vuln-list { display: flex; flex-direction: column; gap: 16px; }
+    .vuln-item {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      border-left: 4px solid var(--accent-primary);
+      transition: all 0.2s ease;
+    }
+    .vuln-item:hover { background: rgba(255, 255, 255, 0.05); }
+
+    .severity-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .sev-critical { background: rgba(239, 68, 68, 0.1); color: var(--critical); border: 1px solid var(--critical); }
+    .sev-high { background: rgba(249, 115, 22, 0.1); color: var(--high); border: 1px solid var(--high); }
+    .sev-medium { background: rgba(234, 179, 8, 0.1); color: var(--medium); border: 1px solid var(--medium); }
+
+    .vuln-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; }
+    .vuln-desc { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px; }
+
+    .remediation-box {
+      background: #000;
+      padding: 16px;
+      border-radius: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: #10b981;
+    }
+
+    .terminal-window {
+      background: #000;
+      border-radius: 16px;
+      padding: 20px;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      border: 1px solid #1f2937;
+    }
+    .terminal-line { display: flex; gap: 10px; }
+    .t-prompt { color: #10b981; font-weight: 700; }
+    .t-info { color: #3b82f6; }
+    .t-warn { color: #eab308; }
+    .t-vuln { color: #ef4444; animation: pulse 1.5s infinite; }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-area">
+        <h1>SentinelGuard</h1>
+        <span class="badge">PRO VERSION</span>
+      </div>
+      <div>
+        <button id="runBtn" style="padding: 10px 24px; border-radius: 10px; background: var(--accent-primary); color: white; border: none; font-weight: 700; cursor: pointer;">Execute Scan</button>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      <div class="stat-card">
+        <p class="stat-label">Scenarios Executed</p>
+        <p class="stat-value" id="statsScenarios">21</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Defects Found</p>
+        <p class="stat-value" id="statsDefects" style="color: var(--critical)">8</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">System Health</p>
+        <p class="stat-value" style="color: var(--medium)">64%</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Validation Status</p>
+        <p class="stat-value" style="color: #10b981">STABLE</p>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <div class="card">
+        <h2 class="card-title">🚨 Validation Findings</h2>
+        <div class="vuln-list" id="vulnList">
+          <!-- Findings will be injected here -->
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">💻 Live Execution Feed</h2>
+        <div class="terminal-window" id="terminal">
+          <div class="terminal-line"><span class="t-prompt">></span> <span class="t-info">Framework initialized... ready for deployment.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const vulnerabilities = [
+      {
+        title: "Sensitive Files Exposed (.env)",
+        severity: "critical",
+        description: "The scanner identified a publicly accessible .env file in the web root containing production API keys and database credentials.",
+        remediation: "Move .env outside of the web-accessible directory or use a .htaccess rule: 'RedirectMatch 404 /\\.env$'"
+      },
+      {
+        title: "Lack of Rate Limiting",
+        severity: "high",
+        description: "The authentication endpoint (/api/v1/login) does not implement account lockout or IP-based rate limiting, enabling brute-force attacks.",
+        remediation: "Implement a sliding window rate limit (e.g., 5 attempts per 10 minutes per IP) using Redis or a web server module."
+      },
+      {
+        title: "Loose CORS Policy (*)",
+        severity: "medium",
+        description: "The Access-Control-Allow-Origin header is set to wildcard '*', which allows any third-party domain to read response data from authenticated users.",
+        remediation: "Restrict CORS allowed origins to only your trusted domain: 'Access-Control-Allow-Origin: https://app.example.com'"
+      },
+      {
+        title: "Missing Content Security Policy (CSP)",
+        severity: "medium",
+        description: "No Content-Security-Policy header detected. This significantly increases the risk of successful XSS attacks and data exfiltration.",
+        remediation: "Add a modern CSP header: 'default-src 'self'; script-src 'self'; object-src 'none';'"
+      }
+    ];
+
+    const logs = [
+      "Starting target discovery for: 127.0.0.1",
+      "Scenario 1: Examining Security Headers...",
+      "WARN: Missing HSTS header.",
+      "Scenario 2: Port Discovery (21, 22, 80, 443)...",
+      "Scenario 5: Testing for Directory Indexing...",
+      "CRITICAL: Found exposed .env file in /public.",
+      "Scenario 14: Brute-force Resilience testing...",
+      "HIGH: Rate limiting missing on /login page.",
+      "Scenario 19: Cookie Attribute Inspection...",
+      "MEDIUM: Cookies missing Secure/HttpOnly flags.",
+      "Finalizing automated scan report..."
+    ];
+
+    function injectVulns() {
+      const list = document.getElementById('vulnList');
+      vulnerabilities.forEach(v => {
+        list.innerHTML += `
+          <div class="vuln-item">
+            <span class="severity-tag sev-${v.severity}">${v.severity}</span>
+            <p class="vuln-title">${v.title}</p>
+            <p class="vuln-desc">${v.description}</p>
+            <div class="remediation-box">
+              <span style="color: #6ee7b7">FIX: </span> ${v.remediation}
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    async function runSimulation() {
+      const term = document.getElementById('terminal');
+      const btn = document.getElementById('runBtn');
+      btn.disabled = true;
+      btn.innerText = "Scanning...";
+      
+      term.innerHTML = '';
+      for (const line of logs) {
+        const type = line.startsWith('CRITICAL') ? 't-vuln' : 
+                     line.startsWith('WARN') ? 't-warn' : 
+                     line.startsWith('HIGH') ? 't-vuln' : 't-info';
+        
+        term.innerHTML += `<div class="terminal-line"><span class="t-prompt">></span> <span class="${type}">${line}</span></div>`;
+        term.scrollTop = term.scrollHeight;
+        await new Promise(r => setTimeout(r, 600));
+      }
+      
+      btn.innerText = "Scan Complete";
+    }
+
+    document.getElementById('runBtn').addEventListener('click', runSimulation);
+    injectVulns();
+  </script>
+</body>
+</html>
