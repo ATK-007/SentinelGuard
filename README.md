@@ -1,8 +1,11 @@
 # SentinelGuard: Security Automation & Validation Framework
 
-![SentinelGuard Shield](https://img.shields.io/badge/Security-Automation-blue?style=for-the-badge&logo=python)
+![SentinelGuard Dashboard Preview](sentinelguard-preview.png)
+
+![Build Status](https://github.com/ATK-007/SentinelGuard/actions/workflows/publish-package.yml/badge.svg)
+![GitHub Package](https://img.shields.io/badge/Container-GHCR-blue?style=for-the-badge&logo=docker)
+![Security-Automation](https://img.shields.io/badge/Security-Automation-blue?style=for-the-badge&logo=python)
 ![Python Version](https://img.shields.io/badge/Python-3.10%2B-green?style=for-the-badge&logo=python)
-![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge&logo=opensource)
 
 **SentinelGuard** is an advanced security orchestration framework designed to automate complex validation scenarios. Unlike traditional vulnerability scanners, SentinelGuard emphasizes **validation logic**, recreating real-world attack patterns across 20+ scenarios to identify deep-seated architectural flaws.
 
